@@ -1,0 +1,26 @@
+syntax="proto3"
+
+package groundctrl;
+
+option go_package = "github.com/Boyul-Kim/groundCTRL/proto/groundctrl;groundctrl";
+
+import "google/protobuf/timestamp.proto";
+
+//run in root:
+//protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative proto/groundctrl/telemetry.proto
+
+message DataChunk {
+    string satellite_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    bytes payload = 3;
+    int64 chunk_sequence = 4;
+    int64 total_chunks = 5;
+}
+
+message Ack {
+    string status = 1;
+}
+
+service TelemetryIngestor {
+    rpc StreamData(stream DataChunk) returns (stream Ack);
+}
